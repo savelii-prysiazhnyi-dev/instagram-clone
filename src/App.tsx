@@ -10,6 +10,8 @@ import { StoryViewer } from "./components/stories/StoryViewer";
 import { PostCard } from "./components/posts/PostCard";
 import { PostDetailModal } from "./components/posts/PostDetailModal";
 import { CreatePostModal } from "./components/posts/CreatePostModal";
+import { ProfileView } from "./components/profile/ProfileView";
+import { EditProfileModal } from "./components/profile/EditProfileModal";
 import {
   currentUser as initialCurrentUser,
   initialStories,
@@ -20,7 +22,7 @@ import {
 import { ActiveView, Post, User, UserStory } from "./types";
 
 export default function App() {
-  const [currentUser] = useState<User>(initialCurrentUser);
+  const [currentUser, setCurrentUser] = useState<User>(initialCurrentUser);
   const [activeView, setActiveView] = useState<ActiveView>("feed");
   const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [stories, setStories] = useState<UserStory[]>(initialStories);
@@ -31,6 +33,7 @@ export default function App() {
     null,
   );
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [suggestedUsers, setSuggestedUsers] = useState<User[]>(
     initialSuggestedUsers,
   );
@@ -84,7 +87,6 @@ export default function App() {
       }),
     );
 
-    // Also update selectedDetailPost if it is currently open
     setSelectedDetailPost((prev) => {
       if (prev && prev.id === postId) {
         const isLiked = !prev.isLiked;
@@ -156,7 +158,18 @@ export default function App() {
     };
 
     setPosts((prev) => [createdPost, ...prev]);
+    setCurrentUser((prev) => ({
+      ...prev,
+      postsCount: prev.postsCount + 1,
+    }));
     setActiveView("feed");
+  };
+
+  const handleSaveProfile = (updated: Partial<User>) => {
+    setCurrentUser((prev) => ({
+      ...prev,
+      ...updated,
+    }));
   };
 
   const unreadNotificationsCount = notifications.filter(
@@ -203,10 +216,9 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-5xl md:ml-18 xl:ml-60 px-2 sm:px-4 py-4 md:py-6 flex justify-center gap-8">
-        <div className="w-full max-w-[630px]">
-          {/* Feed View */}
-          {activeView === "feed" && (
-            <>
+        {activeView === "feed" && (
+          <>
+            <div className="w-full max-w-[630px]">
               {/* Stories Tray */}
               <StoriesTray
                 currentUser={currentUser}
@@ -230,46 +242,58 @@ export default function App() {
                   />
                 ))}
               </div>
-            </>
-          )}
-
-          {/* Placeholder for other views (milestones 5 & 6) */}
-          {activeView === "saved" && (
-            <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-8 text-center">
-              <h2 className="text-xl font-bold mb-2">Saved Posts</h2>
-              <p className="text-sm text-neutral-500 mb-6">
-                Posts you saved appear here.
-              </p>
-              <div className="grid grid-cols-3 gap-2">
-                {posts
-                  .filter((p) => p.isSaved)
-                  .map((p) => (
-                    <div
-                      key={p.id}
-                      onClick={() => setSelectedDetailPost(p)}
-                      className="aspect-square rounded-lg overflow-hidden cursor-pointer"
-                    >
-                      <img
-                        src={p.imageUrl}
-                        alt={p.caption}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform"
-                      />
-                    </div>
-                  ))}
-              </div>
             </div>
-          )}
-        </div>
 
-        {/* Right Sidebar for desktop */}
-        {activeView === "feed" && (
-          <RightSidebar
-            currentUser={currentUser}
-            suggestedUsers={suggestedUsers}
-            onToggleFollow={handleToggleFollow}
-            onSelectUser={() => {}}
-            onViewProfile={() => setActiveView("profile")}
-          />
+            {/* Right Sidebar for desktop */}
+            <RightSidebar
+              currentUser={currentUser}
+              suggestedUsers={suggestedUsers}
+              onToggleFollow={handleToggleFollow}
+              onSelectUser={() => {}}
+              onViewProfile={() => setActiveView("profile")}
+            />
+          </>
+        )}
+
+        {/* Profile View */}
+        {activeView === "profile" && (
+          <div className="w-full">
+            <ProfileView
+              user={currentUser}
+              posts={posts}
+              onSelectPost={(p) => setSelectedDetailPost(p)}
+              onOpenEditProfile={() => setIsEditProfileOpen(true)}
+            />
+          </div>
+        )}
+
+        {/* Saved Posts Direct View */}
+        {activeView === "saved" && (
+          <div className="w-full max-w-3xl">
+            <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-8 text-center mb-6">
+              <h2 className="text-xl font-bold mb-2">Saved Collection</h2>
+              <p className="text-sm text-neutral-500">
+                Only you can see what you&apos;ve saved.
+              </p>
+            </div>
+            <div className="grid grid-cols-3 gap-2 sm:gap-4">
+              {posts
+                .filter((p) => p.isSaved)
+                .map((p) => (
+                  <div
+                    key={p.id}
+                    onClick={() => setSelectedDetailPost(p)}
+                    className="aspect-square rounded-lg overflow-hidden cursor-pointer group relative"
+                  >
+                    <img
+                      src={p.imageUrl}
+                      alt={p.caption}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  </div>
+                ))}
+            </div>
+          </div>
         )}
       </main>
 
@@ -327,6 +351,14 @@ export default function App() {
         onClose={() => setIsCreateModalOpen(false)}
         currentUser={currentUser}
         onCreatePost={handleCreatePost}
+      />
+
+      {/* Edit Profile Modal */}
+      <EditProfileModal
+        isOpen={isEditProfileOpen}
+        onClose={() => setIsEditProfileOpen(false)}
+        currentUser={currentUser}
+        onSaveProfile={handleSaveProfile}
       />
     </div>
   );
