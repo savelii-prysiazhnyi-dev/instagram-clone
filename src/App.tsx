@@ -7,6 +7,9 @@ import { SearchDrawer } from "./components/layout/SearchDrawer";
 import { NotificationsDrawer } from "./components/notifications/NotificationsDrawer";
 import { StoriesTray } from "./components/stories/StoriesTray";
 import { StoryViewer } from "./components/stories/StoryViewer";
+import { PostCard } from "./components/posts/PostCard";
+import { PostDetailModal } from "./components/posts/PostDetailModal";
+import { CreatePostModal } from "./components/posts/CreatePostModal";
 import {
   currentUser as initialCurrentUser,
   initialStories,
@@ -19,11 +22,15 @@ import { ActiveView, Post, User, UserStory } from "./types";
 export default function App() {
   const [currentUser] = useState<User>(initialCurrentUser);
   const [activeView, setActiveView] = useState<ActiveView>("feed");
-  const [posts] = useState<Post[]>(initialPosts);
+  const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [stories, setStories] = useState<UserStory[]>(initialStories);
   const [selectedStoryIndex, setSelectedStoryIndex] = useState<number | null>(
     null,
   );
+  const [selectedDetailPost, setSelectedDetailPost] = useState<Post | null>(
+    null,
+  );
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [suggestedUsers, setSuggestedUsers] = useState<User[]>(
     initialSuggestedUsers,
   );
@@ -62,6 +69,96 @@ export default function App() {
     );
   };
 
+  const handleLikePost = (postId: string) => {
+    setPosts((prev) =>
+      prev.map((post) => {
+        if (post.id === postId) {
+          const isLiked = !post.isLiked;
+          return {
+            ...post,
+            isLiked,
+            likesCount: isLiked ? post.likesCount + 1 : post.likesCount - 1,
+          };
+        }
+        return post;
+      }),
+    );
+
+    // Also update selectedDetailPost if it is currently open
+    setSelectedDetailPost((prev) => {
+      if (prev && prev.id === postId) {
+        const isLiked = !prev.isLiked;
+        return {
+          ...prev,
+          isLiked,
+          likesCount: isLiked ? prev.likesCount + 1 : prev.likesCount - 1,
+        };
+      }
+      return prev;
+    });
+  };
+
+  const handleSavePost = (postId: string) => {
+    setPosts((prev) =>
+      prev.map((post) =>
+        post.id === postId ? { ...post, isSaved: !post.isSaved } : post,
+      ),
+    );
+
+    setSelectedDetailPost((prev) =>
+      prev && prev.id === postId ? { ...prev, isSaved: !prev.isSaved } : prev,
+    );
+  };
+
+  const handleAddComment = (postId: string, text: string) => {
+    const newComment = {
+      id: `comment-${Date.now()}`,
+      user: {
+        username: currentUser.username,
+        avatar: currentUser.avatar,
+        isVerified: currentUser.isVerified,
+      },
+      text,
+      createdAt: "Just now",
+      likesCount: 0,
+      isLiked: false,
+    };
+
+    setPosts((prev) =>
+      prev.map((post) =>
+        post.id === postId
+          ? { ...post, comments: [...post.comments, newComment] }
+          : post,
+      ),
+    );
+
+    setSelectedDetailPost((prev) =>
+      prev && prev.id === postId
+        ? { ...prev, comments: [...prev.comments, newComment] }
+        : prev,
+    );
+  };
+
+  const handleCreatePost = (
+    newPostData: Omit<
+      Post,
+      "id" | "createdAt" | "likesCount" | "isLiked" | "isSaved" | "comments"
+    >,
+  ) => {
+    const createdPost: Post = {
+      id: `post-${Date.now()}`,
+      ...newPostData,
+      createdAt: "JUST NOW",
+      likesCount: 1,
+      isLiked: true,
+      isSaved: false,
+      comments: [],
+    };
+
+    setPosts((prev) => [createdPost, ...prev]);
+    setActiveView("feed");
+  };
+
   const unreadNotificationsCount = notifications.filter(
     (n) => !n.isRead,
   ).length;
@@ -78,7 +175,7 @@ export default function App() {
             setActiveView(view);
           }
         }}
-        onOpenCreateModal={() => {}}
+        onOpenCreateModal={() => setIsCreateModalOpen(true)}
         onToggleSearch={() => setIsSearchOpen((prev) => !prev)}
         isSearchOpen={isSearchOpen}
         currentUser={currentUser}
@@ -107,19 +204,61 @@ export default function App() {
       {/* Main Content Area */}
       <main className="flex-1 max-w-5xl md:ml-18 xl:ml-60 px-2 sm:px-4 py-4 md:py-6 flex justify-center gap-8">
         <div className="w-full max-w-[630px]">
-          {/* Stories Tray */}
+          {/* Feed View */}
           {activeView === "feed" && (
-            <StoriesTray
-              currentUser={currentUser}
-              stories={stories}
-              onSelectStory={(index) => setSelectedStoryIndex(index)}
-              onAddStory={() => {}}
-            />
+            <>
+              {/* Stories Tray */}
+              <StoriesTray
+                currentUser={currentUser}
+                stories={stories}
+                onSelectStory={(index) => setSelectedStoryIndex(index)}
+                onAddStory={() => setIsCreateModalOpen(true)}
+              />
+
+              {/* Posts Feed */}
+              <div className="space-y-4">
+                {posts.map((post) => (
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    currentUser={currentUser}
+                    onLike={handleLikePost}
+                    onSave={handleSavePost}
+                    onAddComment={handleAddComment}
+                    onOpenDetailModal={(p) => setSelectedDetailPost(p)}
+                    onSelectUser={() => setActiveView("profile")}
+                  />
+                ))}
+              </div>
+            </>
           )}
 
-          <div className="p-8 text-center text-neutral-500">
-            Feed content will go here
-          </div>
+          {/* Placeholder for other views (milestones 5 & 6) */}
+          {activeView === "saved" && (
+            <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-8 text-center">
+              <h2 className="text-xl font-bold mb-2">Saved Posts</h2>
+              <p className="text-sm text-neutral-500 mb-6">
+                Posts you saved appear here.
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {posts
+                  .filter((p) => p.isSaved)
+                  .map((p) => (
+                    <div
+                      key={p.id}
+                      onClick={() => setSelectedDetailPost(p)}
+                      className="aspect-square rounded-lg overflow-hidden cursor-pointer"
+                    >
+                      <img
+                        src={p.imageUrl}
+                        alt={p.caption}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform"
+                      />
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right Sidebar for desktop */}
@@ -138,7 +277,7 @@ export default function App() {
       <BottomNav
         activeView={activeView}
         setActiveView={setActiveView}
-        onOpenCreateModal={() => {}}
+        onOpenCreateModal={() => setIsCreateModalOpen(true)}
         currentUser={currentUser}
       />
 
@@ -148,8 +287,8 @@ export default function App() {
         onClose={() => setIsSearchOpen(false)}
         posts={posts}
         users={[currentUser, ...suggestedUsers]}
-        onSelectPost={() => {}}
-        onSelectUser={() => {}}
+        onSelectPost={(p) => setSelectedDetailPost(p)}
+        onSelectUser={() => setActiveView("profile")}
       />
 
       {/* Notifications Drawer */}
@@ -169,6 +308,26 @@ export default function App() {
           onStoryViewed={handleStoryViewed}
         />
       )}
+
+      {/* Post Detail Modal */}
+      {selectedDetailPost && (
+        <PostDetailModal
+          post={selectedDetailPost}
+          currentUser={currentUser}
+          onClose={() => setSelectedDetailPost(null)}
+          onLike={handleLikePost}
+          onSave={handleSavePost}
+          onAddComment={handleAddComment}
+        />
+      )}
+
+      {/* Create Post Modal */}
+      <CreatePostModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        currentUser={currentUser}
+        onCreatePost={handleCreatePost}
+      />
     </div>
   );
 }
