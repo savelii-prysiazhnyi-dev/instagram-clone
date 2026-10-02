@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { InstagramIcon } from "../common/InstagramLogo";
 import { ActiveView, User } from "../../types";
+import { useTheme } from "../../hooks/useTheme";
 
 interface SidebarProps {
   activeView: ActiveView;
@@ -20,8 +21,6 @@ interface SidebarProps {
   isSearchOpen: boolean;
   currentUser: User;
   unreadNotificationsCount: number;
-  isDarkMode: boolean;
-  toggleDarkMode: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -32,11 +31,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   isSearchOpen,
   currentUser,
   unreadNotificationsCount,
-  isDarkMode,
-  toggleDarkMode,
 }) => {
+  const { theme, toggleTheme } = useTheme();
+  const isDarkMode = theme === "dark";
+
   return (
-    <aside className="hidden md:flex flex-col fixed top-0 left-0 h-screen w-18 xl:w-60 border-r border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black px-3 py-6 z-40 transition-all duration-300">
+    <aside className="hidden md:flex flex-col fixed top-0 left-0 h-screen w-18 xl:w-60 border-r border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black px-3 py-6 z-40">
       {/* Brand Logo */}
       <div className="px-2 mb-8 flex items-center justify-between">
         <button
@@ -55,7 +55,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <nav className="flex-1 space-y-1">
         <button
           onClick={() => setActiveView("feed")}
-          className={`flex items-center gap-4 w-full p-3 rounded-xl transition-all duration-200 cursor-pointer ${
+          className={`flex items-center gap-4 w-full p-3 rounded-xl transition-colors duration-150 cursor-pointer ${
             activeView === "feed" && !isSearchOpen
               ? "font-bold bg-neutral-100 dark:bg-neutral-900 text-neutral-950 dark:text-white"
               : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900"
@@ -74,7 +74,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         <button
           onClick={onToggleSearch}
-          className={`flex items-center gap-4 w-full p-3 rounded-xl transition-all duration-200 cursor-pointer ${
+          className={`flex items-center gap-4 w-full p-3 rounded-xl transition-colors duration-150 cursor-pointer ${
             isSearchOpen
               ? "font-bold bg-neutral-100 dark:bg-neutral-900 text-neutral-950 dark:text-white"
               : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900"
@@ -91,7 +91,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         <button
           onClick={() => setActiveView("explore")}
-          className={`flex items-center gap-4 w-full p-3 rounded-xl transition-all duration-200 cursor-pointer ${
+          className={`flex items-center gap-4 w-full p-3 rounded-xl transition-colors duration-150 cursor-pointer ${
             activeView === "explore"
               ? "font-bold bg-neutral-100 dark:bg-neutral-900 text-neutral-950 dark:text-white"
               : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900"
@@ -108,7 +108,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         <button
           onClick={() => setActiveView("notifications")}
-          className={`flex items-center gap-4 w-full p-3 rounded-xl transition-all duration-200 cursor-pointer relative ${
+          className={`flex items-center gap-4 w-full p-3 rounded-xl transition-colors duration-150 cursor-pointer relative ${
             activeView === "notifications"
               ? "font-bold bg-neutral-100 dark:bg-neutral-900 text-neutral-950 dark:text-white"
               : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900"
@@ -134,7 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         <button
           onClick={onOpenCreateModal}
-          className="flex items-center gap-4 w-full p-3 rounded-xl text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-all duration-200 cursor-pointer group"
+          className="flex items-center gap-4 w-full p-3 rounded-xl text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors duration-150 cursor-pointer group"
           title="Create Post"
         >
           <SquarePlus className="w-6 h-6 shrink-0 group-hover:scale-110 transition-transform" />
@@ -143,7 +143,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         <button
           onClick={() => setActiveView("saved")}
-          className={`flex items-center gap-4 w-full p-3 rounded-xl transition-all duration-200 cursor-pointer ${
+          className={`flex items-center gap-4 w-full p-3 rounded-xl transition-colors duration-150 cursor-pointer ${
             activeView === "saved"
               ? "font-bold bg-neutral-100 dark:bg-neutral-900 text-neutral-950 dark:text-white"
               : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900"
@@ -160,7 +160,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         <button
           onClick={() => setActiveView("profile")}
-          className={`flex items-center gap-4 w-full p-3 rounded-xl transition-all duration-200 cursor-pointer ${
+          className={`flex items-center gap-4 w-full p-3 rounded-xl transition-colors duration-150 cursor-pointer ${
             activeView === "profile"
               ? "font-bold bg-neutral-100 dark:bg-neutral-900 text-neutral-950 dark:text-white"
               : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900"
@@ -183,8 +183,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Bottom Section: Dark Mode & User quick badge */}
       <div className="pt-4 border-t border-neutral-200 dark:border-neutral-800 space-y-2">
         <button
-          onClick={toggleDarkMode}
-          className="flex items-center gap-4 w-full p-3 rounded-xl text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-all duration-200 cursor-pointer"
+          onClick={toggleTheme}
+          className="flex items-center gap-4 w-full p-3 rounded-xl text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors duration-150 cursor-pointer"
           title="Toggle Theme"
         >
           {isDarkMode ? (

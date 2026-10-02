@@ -170,7 +170,7 @@ export const PostDetailModal: React.FC<PostDetailModalProps> = ({
                   <MessageCircle className="w-6 h-6 text-neutral-800 dark:text-white" />
                 </button>
                 <button className="cursor-pointer hover:scale-110 transition-transform">
-                  <Send className="w-6 h-6 -rotate-12 text-neutral-800 dark:text-white" />
+                  <Send className="w-6 h-6 -rotate-12 translate-y-[1.5px] text-neutral-800 dark:text-white" />
                 </button>
               </div>
               <button

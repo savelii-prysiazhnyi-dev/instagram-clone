@@ -12,6 +12,7 @@ import { PostDetailModal } from "./components/posts/PostDetailModal";
 import { CreatePostModal } from "./components/posts/CreatePostModal";
 import { ProfileView } from "./components/profile/ProfileView";
 import { EditProfileModal } from "./components/profile/EditProfileModal";
+import { ExploreGrid } from "./components/explore/ExploreGrid";
 import {
   currentUser as initialCurrentUser,
   initialStories,
@@ -40,19 +41,6 @@ export default function App() {
   const [notifications, setNotifications] = useState(sampleNotifications);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  const toggleDarkMode = () => {
-    setIsDarkMode((prev) => {
-      const next = !prev;
-      if (next) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-      return next;
-    });
-  };
 
   const handleToggleFollow = (userId: string) => {
     setSuggestedUsers((prev) =>
@@ -193,8 +181,6 @@ export default function App() {
         isSearchOpen={isSearchOpen}
         currentUser={currentUser}
         unreadNotificationsCount={unreadNotificationsCount}
-        isDarkMode={isDarkMode}
-        toggleDarkMode={toggleDarkMode}
       />
 
       {/* Mobile Top Header */}
@@ -210,8 +196,6 @@ export default function App() {
           }
         }}
         unreadNotificationsCount={unreadNotificationsCount}
-        isDarkMode={isDarkMode}
-        toggleDarkMode={toggleDarkMode}
       />
 
       {/* Main Content Area */}
@@ -253,6 +237,14 @@ export default function App() {
               onViewProfile={() => setActiveView("profile")}
             />
           </>
+        )}
+
+        {/* Explore Discovery View */}
+        {activeView === "explore" && (
+          <ExploreGrid
+            posts={posts}
+            onSelectPost={(p) => setSelectedDetailPost(p)}
+          />
         )}
 
         {/* Profile View */}

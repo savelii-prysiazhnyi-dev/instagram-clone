@@ -2,6 +2,7 @@ import React from "react";
 import { Heart, Moon, Sun, Search } from "lucide-react";
 import { InstagramIcon } from "../common/InstagramLogo";
 import { ActiveView } from "../../types";
+import { useTheme } from "../../hooks/useTheme";
 
 interface MobileHeaderProps {
   onToggleSearch: () => void;
@@ -9,8 +10,6 @@ interface MobileHeaderProps {
   activeView: ActiveView;
   setActiveView: (view: ActiveView) => void;
   unreadNotificationsCount: number;
-  isDarkMode: boolean;
-  toggleDarkMode: () => void;
 }
 
 export const MobileHeader: React.FC<MobileHeaderProps> = ({
@@ -19,9 +18,10 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
   activeView: _activeView,
   setActiveView,
   unreadNotificationsCount,
-  isDarkMode,
-  toggleDarkMode,
 }) => {
+  const { theme, toggleTheme } = useTheme();
+  const isDarkMode = theme === "dark";
+
   return (
     <header className="md:hidden sticky top-0 bg-white/95 dark:bg-black/95 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 z-30 px-4 h-14 flex items-center justify-between">
       <button
@@ -44,7 +44,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
         </button>
 
         <button
-          onClick={toggleDarkMode}
+          onClick={toggleTheme}
           className="p-1.5 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-900 cursor-pointer"
           title="Toggle Theme"
         >

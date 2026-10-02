@@ -157,7 +157,7 @@ export const PostCard: React.FC<PostCardProps> = ({
             className="p-0.5 text-neutral-800 dark:text-neutral-100 hover:scale-115 active:scale-95 transition-transform cursor-pointer"
             aria-label="Share post"
           >
-            <Send className="w-6 h-6 -rotate-12" />
+            <Send className="w-6 h-6 -rotate-12 translate-y-[1.5px]" />
           </button>
         </div>
 

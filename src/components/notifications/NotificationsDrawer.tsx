@@ -47,7 +47,7 @@ export const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto no-scrollbar space-y-4">
+        <div className="flex-1 overflow-y-auto no-scrollbar space-y-3">
           {notifications.length === 0 ? (
             <div className="text-center py-16 text-neutral-400">
               <Heart className="w-12 h-12 mx-auto mb-3 stroke-1 opacity-50" />
@@ -59,12 +59,12 @@ export const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
                 key={n.id}
                 className={`flex items-center justify-between p-3 rounded-xl transition-colors ${
                   !n.isRead
-                    ? "bg-neutral-50 dark:bg-neutral-850 ring-1 ring-neutral-200/50 dark:ring-neutral-700/50"
-                    : "hover:bg-neutral-50 dark:hover:bg-neutral-800/60"
+                    ? "bg-neutral-100/90 dark:bg-neutral-800 ring-1 ring-neutral-200 dark:ring-neutral-700/80 shadow-xs"
+                    : "hover:bg-neutral-50 dark:hover:bg-neutral-800/50"
                 }`}
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="relative">
+                  <div className="relative shrink-0">
                     <img
                       src={n.user.avatar}
                       alt={n.user.username}
@@ -87,20 +87,28 @@ export const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
                     <span className="font-bold text-neutral-950 dark:text-white mr-1">
                       {n.user.username}
                     </span>
-                    {n.text}
-                    <span className="block text-[11px] text-neutral-400 mt-0.5">
+                    <span>{n.text}</span>
+                    <span className="block text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">
                       {n.createdAt}
                     </span>
                   </div>
                 </div>
 
-                {n.targetImage && (
-                  <img
-                    src={n.targetImage}
-                    alt="post target"
-                    className="w-10 h-10 rounded-md object-cover ml-3 shrink-0"
-                  />
-                )}
+                <div className="flex items-center gap-2.5 ml-3 shrink-0">
+                  {n.targetImage && (
+                    <img
+                      src={n.targetImage}
+                      alt="post target"
+                      className="w-10 h-10 rounded-md object-cover"
+                    />
+                  )}
+                  {!n.isRead && (
+                    <span
+                      className="w-2 h-2 rounded-full bg-blue-500 shrink-0"
+                      title="Unread notification"
+                    />
+                  )}
+                </div>
               </div>
             ))
           )}
