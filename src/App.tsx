@@ -21,7 +21,7 @@ import {
   sampleNotifications,
   profileHighlights,
 } from "./data/mockData";
-import { ActiveView, Post, User, UserStory } from "./types";
+import { ActiveView, Comment, Post, User, UserStory } from "./types";
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState<User>(initialCurrentUser);
@@ -158,6 +158,42 @@ export default function App() {
     );
   };
 
+  const handleLikeComment = (postId: string, commentId: string) => {
+    const toggleCommentLike = (comment: Comment): Comment => {
+      if (comment.id !== commentId) return comment;
+      const isLiked = !comment.isLiked;
+      return {
+        ...comment,
+        isLiked,
+        likesCount: isLiked
+          ? comment.likesCount + 1
+          : Math.max(0, comment.likesCount - 1),
+      };
+    };
+
+    setPosts((prev) =>
+      prev.map((post) => {
+        if (post.id === postId) {
+          return {
+            ...post,
+            comments: post.comments.map(toggleCommentLike),
+          };
+        }
+        return post;
+      }),
+    );
+
+    setSelectedDetailPost((prev) => {
+      if (prev && prev.id === postId) {
+        return {
+          ...prev,
+          comments: prev.comments.map(toggleCommentLike),
+        };
+      }
+      return prev;
+    });
+  };
+
   const handleCreatePost = (
     newPostData: Omit<
       Post,
@@ -250,6 +286,7 @@ export default function App() {
                     onLike={handleLikePost}
                     onSave={handleSavePost}
                     onAddComment={handleAddComment}
+                    onLikeComment={handleLikeComment}
                     onOpenDetailModal={(p) => setSelectedDetailPost(p)}
                     onSelectUser={() => setActiveView("profile")}
                   />
@@ -371,6 +408,7 @@ export default function App() {
           onLike={handleLikePost}
           onSave={handleSavePost}
           onAddComment={handleAddComment}
+          onLikeComment={handleLikeComment}
         />
       )}
 

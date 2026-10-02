@@ -17,6 +17,7 @@ interface PostDetailModalProps {
   onLike: (postId: string) => void;
   onSave: (postId: string) => void;
   onAddComment: (postId: string, text: string) => void;
+  onLikeComment?: (postId: string, commentId: string) => void;
 }
 
 export const PostDetailModal: React.FC<PostDetailModalProps> = ({
@@ -26,6 +27,7 @@ export const PostDetailModal: React.FC<PostDetailModalProps> = ({
   onLike,
   onSave,
   onAddComment,
+  onLikeComment,
 }) => {
   const [commentText, setCommentText] = useState("");
 
@@ -141,10 +143,25 @@ export const PostDetailModal: React.FC<PostDetailModalProps> = ({
                 </div>
 
                 <button
-                  className="p-1 text-neutral-400 hover:text-red-500 transition-colors cursor-pointer"
-                  title="Like comment"
+                  type="button"
+                  onClick={() => onLikeComment?.(post.id, comment.id)}
+                  className={`p-1 hover:scale-115 active:scale-90 transition-all cursor-pointer ${
+                    comment.isLiked
+                      ? "text-red-500"
+                      : "text-neutral-400 hover:text-red-500"
+                  }`}
+                  title={comment.isLiked ? "Unlike comment" : "Like comment"}
+                  aria-label={
+                    comment.isLiked ? "Unlike comment" : "Like comment"
+                  }
                 >
-                  <Heart className="w-3.5 h-3.5" />
+                  <Heart
+                    className={`w-3.5 h-3.5 transition-colors ${
+                      comment.isLiked
+                        ? "fill-red-500 text-red-500 stroke-red-500"
+                        : ""
+                    }`}
+                  />
                 </button>
               </div>
             ))}

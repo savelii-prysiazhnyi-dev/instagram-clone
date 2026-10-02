@@ -18,6 +18,7 @@ interface PostCardProps {
   onLike: (postId: string) => void;
   onSave: (postId: string) => void;
   onAddComment: (postId: string, text: string) => void;
+  onLikeComment?: (postId: string, commentId: string) => void;
   onOpenDetailModal: (post: Post) => void;
   onSelectUser?: (user: {
     id: string;
@@ -32,6 +33,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   onLike,
   onSave,
   onAddComment,
+  onLikeComment,
   onOpenDetailModal,
   onSelectUser,
 }) => {
@@ -216,15 +218,34 @@ export const PostCard: React.FC<PostCardProps> = ({
         {post.comments.slice(-2).map((c) => (
           <div
             key={c.id}
-            className="text-sm flex items-start justify-between group"
+            className="text-sm flex items-center justify-between group"
           >
-            <p className="text-neutral-900 dark:text-neutral-100">
+            <p className="text-neutral-900 dark:text-neutral-100 flex-1 min-w-0 pr-2">
               <span className="font-semibold mr-2">{c.user.username}</span>
-              <span>{c.text}</span>
+              <span className="break-words">{c.text}</span>
             </p>
-            <span className="text-[11px] text-neutral-400 shrink-0 ml-2">
-              {c.createdAt}
-            </span>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-[11px] text-neutral-400">
+                {c.createdAt}
+              </span>
+              <button
+                type="button"
+                onClick={() => onLikeComment?.(post.id, c.id)}
+                className={`p-0.5 transition-all hover:scale-115 active:scale-90 cursor-pointer ${
+                  c.isLiked
+                    ? "text-red-500 opacity-100"
+                    : "text-neutral-400 hover:text-red-500 opacity-0 group-hover:opacity-100"
+                }`}
+                title={c.isLiked ? "Unlike comment" : "Like comment"}
+                aria-label={c.isLiked ? "Unlike comment" : "Like comment"}
+              >
+                <Heart
+                  className={`w-3 h-3 ${
+                    c.isLiked ? "fill-red-500 text-red-500 stroke-red-500" : ""
+                  }`}
+                />
+              </button>
+            </div>
           </div>
         ))}
       </div>
