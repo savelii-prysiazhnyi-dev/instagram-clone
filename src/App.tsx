@@ -5,18 +5,25 @@ import { BottomNav } from "./components/layout/BottomNav";
 import { RightSidebar } from "./components/layout/RightSidebar";
 import { SearchDrawer } from "./components/layout/SearchDrawer";
 import { NotificationsDrawer } from "./components/notifications/NotificationsDrawer";
+import { StoriesTray } from "./components/stories/StoriesTray";
+import { StoryViewer } from "./components/stories/StoryViewer";
 import {
   currentUser as initialCurrentUser,
+  initialStories,
   initialPosts,
   suggestedUsers as initialSuggestedUsers,
   sampleNotifications,
 } from "./data/mockData";
-import { ActiveView, Post, User } from "./types";
+import { ActiveView, Post, User, UserStory } from "./types";
 
 export default function App() {
   const [currentUser] = useState<User>(initialCurrentUser);
   const [activeView, setActiveView] = useState<ActiveView>("feed");
   const [posts] = useState<Post[]>(initialPosts);
+  const [stories, setStories] = useState<UserStory[]>(initialStories);
+  const [selectedStoryIndex, setSelectedStoryIndex] = useState<number | null>(
+    null,
+  );
   const [suggestedUsers, setSuggestedUsers] = useState<User[]>(
     initialSuggestedUsers,
   );
@@ -47,6 +54,12 @@ export default function App() {
 
   const handleMarkAllNotificationsRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+  };
+
+  const handleStoryViewed = (userId: string) => {
+    setStories((prev) =>
+      prev.map((s) => (s.userId === userId ? { ...s, hasUnseen: false } : s)),
+    );
   };
 
   const unreadNotificationsCount = notifications.filter(
@@ -94,19 +107,31 @@ export default function App() {
       {/* Main Content Area */}
       <main className="flex-1 max-w-5xl md:ml-18 xl:ml-60 px-2 sm:px-4 py-4 md:py-6 flex justify-center gap-8">
         <div className="w-full max-w-[630px]">
+          {/* Stories Tray */}
+          {activeView === "feed" && (
+            <StoriesTray
+              currentUser={currentUser}
+              stories={stories}
+              onSelectStory={(index) => setSelectedStoryIndex(index)}
+              onAddStory={() => {}}
+            />
+          )}
+
           <div className="p-8 text-center text-neutral-500">
             Feed content will go here
           </div>
         </div>
 
         {/* Right Sidebar for desktop */}
-        <RightSidebar
-          currentUser={currentUser}
-          suggestedUsers={suggestedUsers}
-          onToggleFollow={handleToggleFollow}
-          onSelectUser={() => {}}
-          onViewProfile={() => setActiveView("profile")}
-        />
+        {activeView === "feed" && (
+          <RightSidebar
+            currentUser={currentUser}
+            suggestedUsers={suggestedUsers}
+            onToggleFollow={handleToggleFollow}
+            onSelectUser={() => {}}
+            onViewProfile={() => setActiveView("profile")}
+          />
+        )}
       </main>
 
       {/* Mobile Bottom Navigation */}
@@ -134,6 +159,16 @@ export default function App() {
         notifications={notifications}
         onMarkAllAsRead={handleMarkAllNotificationsRead}
       />
+
+      {/* Fullscreen Story Viewer */}
+      {selectedStoryIndex !== null && (
+        <StoryViewer
+          stories={stories}
+          initialUserIndex={selectedStoryIndex}
+          onClose={() => setSelectedStoryIndex(null)}
+          onStoryViewed={handleStoryViewed}
+        />
+      )}
     </div>
   );
 }
