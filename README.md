@@ -3,6 +3,11 @@
 A modern, responsive, high-performance web client inspired by Instagram, built with React 19, TypeScript, Vite, and Tailwind CSS v4.
 
 ---
+<img width="1920" height="959" alt="image" src="https://github.com/user-attachments/assets/f26b9468-61b9-44b9-bc7e-75cc80c5d1e9" />
+<img width="1920" height="959" alt="image" src="https://github.com/user-attachments/assets/76766a86-54d6-4797-888a-b5029dbd6c66" />
+<img width="1920" height="959" alt="image" src="https://github.com/user-attachments/assets/e2e9206d-a7e5-4696-8590-cbf34b18cf0e" />
+
+
 
 ## Features
 
