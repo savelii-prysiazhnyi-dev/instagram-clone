@@ -60,6 +60,18 @@ export default function App() {
     );
   };
 
+  const handleViewProfileStory = () => {
+    const userStoryIndex = stories.findIndex(
+      (s) =>
+        s.userId === currentUser.id ||
+        s.userId === "current-user-1" ||
+        s.username === currentUser.username,
+    );
+    if (userStoryIndex !== -1) {
+      setSelectedStoryIndex(userStoryIndex);
+    }
+  };
+
   const handleLikePost = (postId: string) => {
     setPosts((prev) =>
       prev.map((post) => {
@@ -253,8 +265,15 @@ export default function App() {
             <ProfileView
               user={currentUser}
               posts={posts}
+              userStory={stories.find(
+                (s) =>
+                  s.userId === currentUser.id ||
+                  s.userId === "current-user-1" ||
+                  s.username === currentUser.username,
+              )}
               onSelectPost={(p) => setSelectedDetailPost(p)}
               onOpenEditProfile={() => setIsEditProfileOpen(true)}
+              onViewUserStory={handleViewProfileStory}
             />
           </div>
         )}

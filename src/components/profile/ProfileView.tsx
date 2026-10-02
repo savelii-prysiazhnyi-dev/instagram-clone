@@ -9,13 +9,15 @@ import {
   MessageCircle,
   CheckCircle2,
 } from "lucide-react";
-import { User, Post } from "../../types";
+import { User, Post, UserStory } from "../../types";
 
 interface ProfileViewProps {
   user: User;
   posts: Post[];
+  userStory?: UserStory;
   onSelectPost: (post: Post) => void;
   onOpenEditProfile: () => void;
+  onViewUserStory?: () => void;
 }
 
 const highlights = [
@@ -48,8 +50,10 @@ const highlights = [
 export const ProfileView: React.FC<ProfileViewProps> = ({
   user,
   posts,
+  userStory,
   onSelectPost,
   onOpenEditProfile,
+  onViewUserStory,
 }) => {
   const [activeTab, setActiveTab] = useState<"posts" | "saved" | "tagged">(
     "posts",
@@ -65,19 +69,45 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   if (activeTab === "saved") displayPosts = savedPosts;
   if (activeTab === "tagged") displayPosts = taggedPosts;
 
+  const hasStories = !!userStory && userStory.stories.length > 0;
+
   return (
     <div className="w-full max-w-4xl mx-auto py-6 px-4">
       {/* Profile Header */}
       <header className="flex flex-col sm:flex-row items-center sm:items-start gap-8 mb-10 pb-8 border-b border-neutral-200 dark:border-neutral-800">
-        {/* Avatar with Story Ring */}
+        {/* Avatar with Story Ring & Click to View */}
         <div className="shrink-0">
-          <div className="w-24 h-24 sm:w-36 sm:h-36 rounded-full p-1 story-ring-unseen">
-            <img
-              src={user.avatar}
-              alt={user.username}
-              className="w-full h-full rounded-full object-cover border-4 border-white dark:border-black"
-            />
-          </div>
+          <button
+            onClick={() => {
+              if (hasStories && onViewUserStory) {
+                onViewUserStory();
+              }
+            }}
+            disabled={!hasStories}
+            className={`relative rounded-full block transition-transform outline-none ${
+              hasStories ? "cursor-pointer hover:scale-105" : "cursor-default"
+            }`}
+            title={hasStories ? "Watch story" : user.username}
+          >
+            <div
+              className={`w-24 h-24 sm:w-36 sm:h-36 rounded-full transition-all ${
+                hasStories
+                  ? `p-1 ${userStory?.hasUnseen ? "story-ring-unseen" : "story-ring-seen"}`
+                  : "bg-neutral-200 dark:bg-neutral-800"
+              }`}
+            >
+              <img
+                src={user.avatar}
+                alt={user.username}
+                className={`w-full h-full rounded-full object-cover ${
+                  hasStories
+                    ? "border-4 border-neutral-50 dark:border-black"
+                    : ""
+                }`}
+              />
+            </div>
+            {hasStories && <span className="sr-only">Watch story</span>}
+          </button>
         </div>
 
         {/* Info & Stats */}

@@ -16,6 +16,27 @@ export const currentUser: User = {
 
 export const initialStories: UserStory[] = [
   {
+    userId: "current-user-1",
+    username: "alex.rivera",
+    avatar:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+    hasUnseen: true,
+    stories: [
+      {
+        id: "cur-1",
+        imageUrl:
+          "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+        timestamp: "2h",
+      },
+      {
+        id: "cur-2",
+        imageUrl:
+          "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=800&q=80",
+        timestamp: "45m",
+      },
+    ],
+  },
+  {
     userId: "user-1",
     username: "sophia.lens",
     avatar:
