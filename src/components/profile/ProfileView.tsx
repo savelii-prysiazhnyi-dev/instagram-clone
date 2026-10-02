@@ -18,6 +18,7 @@ interface ProfileViewProps {
   onSelectPost: (post: Post) => void;
   onOpenEditProfile: () => void;
   onViewUserStory?: () => void;
+  onSelectHighlight?: (highlightIndex: number) => void;
 }
 
 const highlights = [
@@ -54,6 +55,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   onSelectPost,
   onOpenEditProfile,
   onViewUserStory,
+  onSelectHighlight,
 }) => {
   const [activeTab, setActiveTab] = useState<"posts" | "saved" | "tagged">(
     "posts",
@@ -200,22 +202,24 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
       {/* Story Highlights */}
       <section className="mb-10 px-2 flex items-center gap-6 overflow-x-auto no-scrollbar py-2">
-        {highlights.map((h) => (
-          <div
+        {highlights.map((h, idx) => (
+          <button
             key={h.id}
-            className="flex flex-col items-center gap-2 shrink-0 cursor-pointer group"
+            onClick={() => onSelectHighlight?.(idx)}
+            className="flex flex-col items-center gap-2 shrink-0 cursor-pointer group text-center outline-none"
+            title={`View ${h.title} highlight`}
           >
-            <div className="w-18 h-18 rounded-full p-[2px] border border-neutral-300 dark:border-neutral-700 group-hover:scale-105 transition-transform">
+            <div className="w-18 h-18 rounded-full p-[2px] border border-neutral-300 dark:border-neutral-700 group-hover:border-neutral-400 dark:group-hover:border-neutral-500 group-hover:scale-105 transition-all">
               <img
                 src={h.img}
                 alt={h.title}
                 className="w-full h-full rounded-full object-cover border-2 border-white dark:border-black"
               />
             </div>
-            <span className="text-xs font-medium text-neutral-800 dark:text-neutral-200">
+            <span className="text-xs font-medium text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white transition-colors">
               {h.title}
             </span>
-          </div>
+          </button>
         ))}
       </section>
 

@@ -14,6 +14,99 @@ export const currentUser: User = {
   followingCount: 482,
 };
 
+export const profileHighlights: UserStory[] = [
+  {
+    userId: "highlight-travel",
+    username: "alex.rivera • Travel ✈️",
+    avatar:
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=300&q=80",
+    hasUnseen: false,
+    stories: [
+      {
+        id: "ht-1",
+        imageUrl:
+          "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+        timestamp: "Highlight",
+      },
+      {
+        id: "ht-2",
+        imageUrl:
+          "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80",
+        timestamp: "Highlight",
+      },
+      {
+        id: "ht-3",
+        imageUrl:
+          "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80",
+        timestamp: "Highlight",
+      },
+    ],
+  },
+  {
+    userId: "highlight-workspace",
+    username: "alex.rivera • Workspace 💻",
+    avatar:
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80",
+    hasUnseen: false,
+    stories: [
+      {
+        id: "hw-1",
+        imageUrl:
+          "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=80",
+        timestamp: "Highlight",
+      },
+      {
+        id: "hw-2",
+        imageUrl:
+          "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80",
+        timestamp: "Highlight",
+      },
+    ],
+  },
+  {
+    userId: "highlight-design",
+    username: "alex.rivera • Design 🎨",
+    avatar:
+      "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=300&q=80",
+    hasUnseen: false,
+    stories: [
+      {
+        id: "hd-1",
+        imageUrl:
+          "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80",
+        timestamp: "Highlight",
+      },
+      {
+        id: "hd-2",
+        imageUrl:
+          "https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=800&q=80",
+        timestamp: "Highlight",
+      },
+    ],
+  },
+  {
+    userId: "highlight-cafes",
+    username: "alex.rivera • Cafes ☕",
+    avatar:
+      "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=300&q=80",
+    hasUnseen: false,
+    stories: [
+      {
+        id: "hc-1",
+        imageUrl:
+          "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80",
+        timestamp: "Highlight",
+      },
+      {
+        id: "hc-2",
+        imageUrl:
+          "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80",
+        timestamp: "Highlight",
+      },
+    ],
+  },
+];
+
 export const initialStories: UserStory[] = [
   {
     userId: "current-user-1",

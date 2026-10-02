@@ -19,6 +19,7 @@ import {
   initialPosts,
   suggestedUsers as initialSuggestedUsers,
   sampleNotifications,
+  profileHighlights,
 } from "./data/mockData";
 import { ActiveView, Post, User, UserStory } from "./types";
 
@@ -27,6 +28,8 @@ export default function App() {
   const [activeView, setActiveView] = useState<ActiveView>("feed");
   const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [stories, setStories] = useState<UserStory[]>(initialStories);
+  const [activeStoryDeck, setActiveStoryDeck] =
+    useState<UserStory[]>(initialStories);
   const [selectedStoryIndex, setSelectedStoryIndex] = useState<number | null>(
     null,
   );
@@ -58,6 +61,14 @@ export default function App() {
     setStories((prev) =>
       prev.map((s) => (s.userId === userId ? { ...s, hasUnseen: false } : s)),
     );
+    setActiveStoryDeck((prev) =>
+      prev.map((s) => (s.userId === userId ? { ...s, hasUnseen: false } : s)),
+    );
+  };
+
+  const handleSelectFeedStory = (index: number) => {
+    setActiveStoryDeck(stories);
+    setSelectedStoryIndex(index);
   };
 
   const handleViewProfileStory = () => {
@@ -68,8 +79,14 @@ export default function App() {
         s.username === currentUser.username,
     );
     if (userStoryIndex !== -1) {
+      setActiveStoryDeck(stories);
       setSelectedStoryIndex(userStoryIndex);
     }
+  };
+
+  const handleSelectHighlight = (highlightIndex: number) => {
+    setActiveStoryDeck(profileHighlights);
+    setSelectedStoryIndex(highlightIndex);
   };
 
   const handleLikePost = (postId: string) => {
@@ -219,7 +236,7 @@ export default function App() {
               <StoriesTray
                 currentUser={currentUser}
                 stories={stories}
-                onSelectStory={(index) => setSelectedStoryIndex(index)}
+                onSelectStory={handleSelectFeedStory}
                 onAddStory={() => setIsCreateModalOpen(true)}
               />
 
@@ -274,6 +291,7 @@ export default function App() {
               onSelectPost={(p) => setSelectedDetailPost(p)}
               onOpenEditProfile={() => setIsEditProfileOpen(true)}
               onViewUserStory={handleViewProfileStory}
+              onSelectHighlight={handleSelectHighlight}
             />
           </div>
         )}
@@ -337,7 +355,7 @@ export default function App() {
       {/* Fullscreen Story Viewer */}
       {selectedStoryIndex !== null && (
         <StoryViewer
-          stories={stories}
+          stories={activeStoryDeck}
           initialUserIndex={selectedStoryIndex}
           onClose={() => setSelectedStoryIndex(null)}
           onStoryViewed={handleStoryViewed}
