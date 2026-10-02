@@ -187,8 +187,10 @@ export const PostCard: React.FC<PostCardProps> = ({
       </div>
 
       {/* Caption */}
-      <div className="px-4 pt-1.5 text-sm text-neutral-900 dark:text-neutral-100">
-        <span className="font-semibold mr-2">{post.user.username}</span>
+      <div className="px-4 pt-1.5 text-sm leading-relaxed text-neutral-900 dark:text-neutral-100">
+        <span className="font-semibold text-neutral-950 dark:text-white mr-2">
+          {post.user.username}
+        </span>
         <span>
           {isExpanded || post.caption.length <= 100
             ? post.caption
@@ -205,11 +207,11 @@ export const PostCard: React.FC<PostCardProps> = ({
       </div>
 
       {/* Comments List Preview */}
-      <div className="px-4 pt-1.5 space-y-1">
+      <div className="px-4 pt-1 space-y-1">
         {post.comments.length > 2 && (
           <button
             onClick={() => onOpenDetailModal(post)}
-            className="text-neutral-500 dark:text-neutral-400 text-xs hover:text-neutral-700 dark:hover:text-neutral-200 cursor-pointer"
+            className="text-neutral-500 dark:text-neutral-400 text-xs hover:text-neutral-700 dark:hover:text-neutral-200 cursor-pointer block pb-0.5"
           >
             View all {post.comments.length} comments
           </button>
@@ -218,14 +220,18 @@ export const PostCard: React.FC<PostCardProps> = ({
         {post.comments.slice(-2).map((c) => (
           <div
             key={c.id}
-            className="text-sm flex items-center justify-between group"
+            className="text-[13px] leading-snug flex items-center justify-between group py-0.5"
           >
-            <p className="text-neutral-900 dark:text-neutral-100 flex-1 min-w-0 pr-2">
-              <span className="font-semibold mr-2">{c.user.username}</span>
-              <span className="break-words">{c.text}</span>
+            <p className="flex-1 min-w-0 pr-2">
+              <span className="font-medium text-neutral-800 dark:text-neutral-200 mr-2">
+                {c.user.username}
+              </span>
+              <span className="break-words text-neutral-600 dark:text-neutral-300">
+                {c.text}
+              </span>
             </p>
             <div className="flex items-center gap-2 shrink-0">
-              <span className="text-[11px] text-neutral-400">
+              <span className="text-[11px] text-neutral-400 dark:text-neutral-500">
                 {c.createdAt}
               </span>
               <button

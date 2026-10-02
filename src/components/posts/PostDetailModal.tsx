@@ -102,7 +102,7 @@ export const PostDetailModal: React.FC<PostDetailModalProps> = ({
                 <span className="font-semibold mr-1.5 text-neutral-950 dark:text-white">
                   {post.user.username}
                 </span>
-                <span className="text-neutral-800 dark:text-neutral-200">
+                <span className="text-neutral-900 dark:text-neutral-100">
                   {post.caption}
                 </span>
                 <p className="text-[11px] text-neutral-400 mt-1">
@@ -124,10 +124,10 @@ export const PostDetailModal: React.FC<PostDetailModalProps> = ({
                     className="w-8 h-8 rounded-full object-cover shrink-0"
                   />
                   <div className="text-sm">
-                    <span className="font-semibold mr-1.5 text-neutral-950 dark:text-white">
+                    <span className="font-medium mr-1.5 text-neutral-800 dark:text-neutral-200">
                       {comment.user.username}
                     </span>
-                    <span className="text-neutral-800 dark:text-neutral-200">
+                    <span className="text-neutral-600 dark:text-neutral-300">
                       {comment.text}
                     </span>
                     <div className="flex items-center gap-3 text-[11px] text-neutral-400 mt-1">
