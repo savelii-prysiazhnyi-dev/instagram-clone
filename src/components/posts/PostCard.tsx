@@ -206,8 +206,15 @@ export const PostCard: React.FC<PostCardProps> = ({
         )}
       </div>
 
+      {/* Subtle Centered Separator between Author and Comments */}
+      {post.comments.length > 0 && (
+        <div className="px-4 py-2 flex justify-center">
+          <div className="w-12 h-[1px] bg-neutral-200 dark:bg-neutral-800 rounded-full" />
+        </div>
+      )}
+
       {/* Comments List Preview */}
-      <div className="px-4 pt-1 space-y-1">
+      <div className="px-4 space-y-1">
         {post.comments.length > 2 && (
           <button
             onClick={() => onOpenDetailModal(post)}

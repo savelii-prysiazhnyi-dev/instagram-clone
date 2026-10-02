@@ -111,6 +111,13 @@ export const PostDetailModal: React.FC<PostDetailModalProps> = ({
               </div>
             </div>
 
+            {/* Subtle Centered Separator between Author and Comments */}
+            {post.comments.length > 0 && (
+              <div className="py-2 flex justify-center">
+                <div className="w-12 h-[1px] bg-neutral-200 dark:bg-neutral-800 rounded-full" />
+              </div>
+            )}
+
             {/* Other comments */}
             {post.comments.map((comment) => (
               <div
